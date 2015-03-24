@@ -1,0 +1,43 @@
+
+# Proyecto-Corto-1
+archivos del poryecto 1
+
+module Proyecto_Corto_1(
+input wire [5:0] Temp,
+input wire ignicion, movimiento, reset,clock_In_Nexys,
+output wire [2:0] Salidas,
+output wire sistema_Act,
+output wire [3:0] seg_7_A,
+output wire [6:0] seg_7_C
+    );
+
+wire ign,mov;
+wire [5:0] T;
+wire [2:0] O_Comp;
+wire [2:0] sal;
+wire [1:0] estate;
+wire enable_E,enable_O;
+
+
+
+
+FF_D_enable Igni_M (.clock(clock_In_Nexys),.reset(reset),.enable(enable_E),.d(ignicion),.q(ign));
+	 
+FF_D_enable movi_M (.clock(clock_In_Nexys), .reset(reset),.enable(enable_E), .d(movimiento), .q(mov));
+	 
+Registro_N_bits #(.N(6)) Temperatura (.clock(clock_In_Nexys), .reset(reset), .enable(enable_E), .d(Temp), .q(T));
+
+Comparador #(.N(6)) Comparador_de_Temperatura (.D1(T), .mayor(O_Comp));
+	 
+Decodificador #(.N(5)) Logica_de_salidas (.datos({O_Comp,mov,ign}),.salidas(sal));
+
+Registro_N_bits #(.N(3)) Reg_S (.clock(clock_In_Nexys), .reset(reset), .enable(enable_O), .d(sal), .q(Salidas));
+
+Control_FSM Control (.clock(clock_In_Nexys), .reset(reset), .Igni(ignicion), .temp_peli(O_Comp[0]), .Master_Reset(reset),.current_state(estate), .enable_FF_IN(enable_E), .enable_FF_OUT(enable_O));
+
+Controlador_7_Seg Display (.dato_Temp(T), .Est_actual(estate), .Clock(clock_In_Nexys), .seg_7_catodos(seg_7_C), .an(seg_7_A));
+
+assign sistema_Act = ign;
+
+
+endmodule
