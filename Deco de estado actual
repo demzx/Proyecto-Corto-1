@@ -1,0 +1,15 @@
+module deco_de_est_maq(
+    input wire [1:0] Est_act,
+	 output reg [6:0] segmen_est
+    );
+always @*
+begin
+     segmen_est =7'b0000000;
+     case (Est_act)
+	  2'b00:segmen_est = 7'b0000001;
+	  2'b01:segmen_est = 7'b1001111;
+	  2'b10:segmen_est = 7'b0010010;
+	  2'b11:segmen_est = 7'b0000110;
+     endcase
+end
+endmodule
