@@ -1,0 +1,19 @@
+
+module FF_D_enable
+ (input wire clock,
+  input wire reset,
+  input wire enable,
+  input wire d,
+  output reg q 
+    );
+// definicion de las entradas y salidas del modulo 
+
+// cuerpo 
+always @(posedge clock, posedge reset)
+if (reset) 
+          q <= 1'b0; // si el reset esta activado la salida se pone en 0 
+	 
+else if (enable) 
+          q <= d;  // si el enable esta activado se deja p
+			 
+endmodule
