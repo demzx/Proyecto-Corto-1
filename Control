@@ -1,0 +1,56 @@
+module Control_FSM
+( input wire clock,reset,
+  input wire  Igni,temp_peli,Master_Reset,
+  output reg [1:0] current_state,
+  output wire  enable_FF_IN, enable_FF_OUT );
+
+localparam [1:0]  E1=2'b00,
+                  E2=2'b01,
+						E3=2'b10;
+						
+reg [1:0] next_state;
+
+always @ (posedge clock, posedge reset)
+          
+	 if(reset)
+	   current_state <= E1;
+	else 
+	   current_state <= next_state;
+		
+always @*
+       begin
+		 next_state <= current_state;
+		 //enable_FF_IN <= 1'b0;
+		 //enable_FF_OUT <= 1'b0;
+		 
+       case (current_state)
+		      
+				E1: if (Igni)
+		               begin 
+					      next_state <= E2;
+                     end
+			        else 
+					      next_state <= E1;
+					  
+             E2: if (temp_peli)
+				         begin
+							next_state <= E3;
+							end 
+					   else 
+		               next_state <= E2;
+							
+			    E3: if (Master_Reset)
+				         begin
+							next_state <= E1;
+							end 
+					   else 
+		               next_state <= E3;
+							
+		        default : next_state <= E1;
+		endcase		
+		end 
+		
+		assign enable_FF_IN =  & Igni || (current_state==E2) || (current_state==E3) ;
+		assign enable_FF_OUT =(current_state==E2) & temp_peli || (current_state==E3) ;
+		
+endmodule
