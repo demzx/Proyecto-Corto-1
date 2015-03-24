@@ -1,0 +1,20 @@
+
+module Decodificador
+	# (parameter N = 5)
+	(
+	input wire [N-1:0] datos,
+	output reg [N-3:0] salidas
+    );
+// En las entradas: datos[0] sin ignicion, datos[1] presencia, datos[2] temperatura mayor a 25 grados C, datos[3] temperatura mayor a 27 grados C
+//En las salidas: salidas[0] sistema funcionando, salidas[1] bajar ventanas, salidas[2] ventilador, salidas[3] alarma 
+always @*
+	casex (datos)
+		//4'b???1: salidas = 4'b0001; //Sistema funcionando
+		5'b00111: salidas = 4'b001;//Temperatura de 24 grados, entonces, abra ventanas
+		5'b01111: salidas = 4'b011;//Temperatura de 27 grados, entonces, encienda ventilador (mantiene ventanas abiertas)
+		5'b11111: salidas = 4'b111;//Temperatura 30 grados, entonces, encienda alarma (mantiene ventlador y ventanas abiertas)
+		default: salidas = 4'b000;
+	endcase
+
+
+endmodule
