@@ -1,0 +1,24 @@
+
+module Comparador
+	# (parameter N = 6)
+
+	(
+	input wire [N-1:0] D1,
+	output wire [2:0] mayor
+    );
+
+reg [2:0] c;
+	 
+always @*
+	if (D1 > 6'd30)
+		 c = 3'b111;
+	else if (D1 > 6'd27)
+		 c = 3'b011; 
+	else if (D1 > 6'd24)
+		 c = 3'b001;
+	else
+		 c = 3'b000;
+
+assign mayor = c;
+
+endmodule
